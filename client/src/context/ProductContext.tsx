@@ -9,18 +9,23 @@ interface ProductContextType {
   handleCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   specs: Specs[];
   setSpecs: React.Dispatch<React.SetStateAction<Specs[]>>;
-  handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   images: ExtendedFile[];
   setImages: React.Dispatch<React.SetStateAction<ExtendedFile[]>>;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   getPreSignedUrl: () => Promise<void>;
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
   addProductMutation: UseMutationResult<void, unknown, void, unknown>;
-  progress: number;
+  progress: string;
   toggleAddSpec: boolean;
   setToggleAddSpec: React.Dispatch<React.SetStateAction<boolean>>;
+  discount: {
+    percentage: string | number;
+    expiry: string | number;
+  };
+  setDiscount: React.Dispatch<
+    React.SetStateAction<{
+      percentage: string | number;
+      expiry: string | number;
+    }>
+  >;
 }
 
 export const ProductContext = React.createContext<
