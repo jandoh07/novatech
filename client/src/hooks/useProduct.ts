@@ -80,11 +80,12 @@ const useProduct = () => {
     return res.data;
   };
 
+
   const addProductMutation = useMutation(async () => {
     const preSignedUrls = await getPreSignedUrl();
+    const imageUrls: string[] = [];
     const totalSize = images.reduce((acc, curr) => acc + curr.size, 0);
     let uploadedSize = 0;
-    const imageUrls: string[] = [];
 
     for (let i = 0; i < preSignedUrls.url.length; i++) {
       await axios
@@ -107,11 +108,10 @@ const useProduct = () => {
             }, 100);
           },
         }
-      )
-        .then(() => {
-          imageUrls.push(preSignedUrls.url[i].signedUrl.split("?")[0]);
-        });
-    }
+      ).then(() => {
+        imageUrls.push(preSignedUrls.url[i].signedUrl.split("?")[0]);
+      })
+  }
 
         const res = await customAxios.post("/products", {
       ...product,
@@ -127,7 +127,7 @@ const useProduct = () => {
       }),
     });
     return res.data;
-  }, {
+}, {
     onSuccess: () => {
       toast.success("Product added successfully");
       setProduct({
