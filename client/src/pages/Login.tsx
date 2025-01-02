@@ -39,7 +39,8 @@ const Login = () => {
         const referrer = document.referrer;
 
         if (referrer && referrer.includes(window.location.origin)) {
-          navigate(-1);
+          // navigate(-1);
+          navigate(referrer.split(window.location.origin)[1]);
         } else {
           navigate("/");
         }
