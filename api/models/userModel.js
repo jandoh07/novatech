@@ -18,14 +18,12 @@ const userSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
-      unique: true,
     },
   ],
   wishlist: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
-      unique: true,
     },
   ],
   role: {
