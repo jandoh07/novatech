@@ -1,4 +1,5 @@
 export interface Product {
+    _id?: string;
     name: string;
     price: number;
     brand: string;
@@ -6,12 +7,12 @@ export interface Product {
     imageUrl: string[];
     category: string;
     stock: number;
-    specs?: Specs[];
+    specs?: Spec[];
     discount?: Discount;
     rating?: Rating;
 }
 
-export interface Specs {
+export interface Spec {
     key: string;
     value: string;
     edit?: boolean;

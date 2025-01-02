@@ -13,6 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { customAxios } from "../../axios/axios";
 import useValidateUser from "../../hooks/useValidateUser";
+import { useUserStore } from "../../zustand/store";
 
 interface NavBarProps {
   toggleSidebar: boolean;
@@ -21,13 +22,14 @@ interface NavBarProps {
 
 const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
   const [toggleSearch, setToggleSearch] = useState(false);
-  const { user, setUser, isAdmin, setIsAdmin } = useValidateUser();
+  const { user, isAdmin, setIsAdmin } = useValidateUser();
+  const { logout } = useUserStore();
 
   const handleLogout = async () => {
     await customAxios.post("/auth/logout");
 
     localStorage.removeItem("user");
-    setUser(null);
+    logout();
     setIsAdmin(false);
   };
 

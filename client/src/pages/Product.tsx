@@ -1,113 +1,127 @@
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer";
-import { FaHeart, FaRegHeart, FaRegStar, FaStar } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaRegStar } from "react-icons/fa";
+import { customAxios } from "../axios/axios";
+import { useQuery } from "react-query";
+import { useEffect, useState } from "react";
+import { Spec } from "../types/Product";
 
 const Product = () => {
   const { id } = useParams();
-  const whishlist = true;
-  // const specs = {
-  //   Operating Systems: "IOS 16",
-  //   Display: "6.1 inches",
-  //   Camera: "12MP",
-  //   Battery: "4000mAh",
-  //   RAM: "4GB",
-  //   Storage: "128GB",
-  //   Cellular: "5G",
-  // };
+  const user = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user")!)
+    : {};
+  const [currentImage, setCurrentImage] = useState<string>("");
+  const isInWishlist =
+    user.wishlist && Array.isArray(user.wishlist) && user.wishlist.includes(id);
+
+  const query = useQuery("product", async () => {
+    const res = await customAxios.get(`/products/${id}`);
+    setCurrentImage(res.data.imageUrl[0]);
+    return res.data;
+  });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <div>
         <Header />
-        <div className="w-[95%] md:w-[80%] mx-auto md:grid grid-cols-2 gap-2 my-4">
-          <div className="w-full flex items-start gap-4">
-            <div className="space-y-2">
-              <div className="size-[3.5rem] rounded shadow-custom p-1">
-                <img
-                  src="/iphone14.jpg"
-                  alt=""
-                  className="object-contain h-full mx-auto"
-                />
+        {query.isLoading ? (
+          <p className="text-center mt-8">Loading...</p>
+        ) : query.isSuccess ? (
+          <div className="w-[95%] md:w-[80%] mx-auto md:grid grid-cols-2 gap-2 my-4">
+            <div className="w-full flex items-start gap-2 md:gap-4">
+              <div className="space-y-2">
+                {query.data?.imageUrl.map((url: string, index: number) => (
+                  <div
+                    className={`${
+                      currentImage === url && "border border-tertiary"
+                    } size-[3.2rem] md:size-[3.5rem] rounded shadow-custom p-1 cursor-pointer`}
+                    key={index}
+                    onClick={() => setCurrentImage(url)}
+                  >
+                    <img
+                      src={url}
+                      alt={query.data?.name}
+                      className="object-contain h-full mx-auto"
+                    />
+                  </div>
+                ))}
               </div>
-              <div className="size-[3.5rem] opacity-70 rounded">
+              <div className="mx-auto">
                 <img
-                  src="/iphone14.jpg"
-                  alt=""
-                  className="object-contain h-full mx-auto"
-                />
-              </div>
-              <div className="size-[3.5rem] opacity-70 rounded">
-                <img
-                  src="/iphone14.jpg"
-                  alt=""
-                  className="object-contain h-full mx-auto"
-                />
-              </div>
-              <div className="size-[3.5rem] opacity-70 rounded">
-                <img
-                  src="/iphone14.jpg"
-                  alt=""
-                  className="object-contain h-full mx-auto"
+                  src={currentImage || query.data?.imageUrl[0]}
+                  alt={query.data?.name}
+                  className="h-[400px] md:h-[500px] object-contain"
                 />
               </div>
             </div>
-            <div>
-              <img
-                src="/iphone14.jpg"
-                alt=""
-                className="h-[400px] md:h-[650px] object-contain"
-              />
-            </div>
-          </div>
-          <div className="w-full mt-4 md:mt-0 min-h-[350px] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-2xl font-medium">
-                  Apple iPhone 14, 128GB, Midnight - Unlocked (Renewed Premium)
-                </p>
-                {whishlist ? (
-                  <FaHeart className="shrink-0 text-2xl text-secondary" />
-                ) : (
-                  <FaRegHeart className="shrink-0 text-2xl text-secondary" />
-                )}
-              </div>
-              <div className="font-medium my-2">
-                <Link to={""} className="text-blue-500">
-                  Apple
-                </Link>{" "}
-                |{" "}
-                <Link to={""} className="text-blue-500">
-                  Phones & Tablets
-                </Link>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xl text-secondary my-2">
-                  <FaStar />
+            <div className="w-full mt-4 md:mt-0 min-h-[350px] flex flex-col justify-start">
+              <div>
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-2xl font-medium">{query.data?.name}</p>
+                  {isInWishlist ? (
+                    <FaHeart className="shrink-0 text-2xl text-secondary" />
+                  ) : (
+                    <FaRegHeart className="shrink-0 text-2xl text-secondary" />
+                  )}
+                </div>
+                <div className="font-medium my-2">
+                  <Link to={""} className="text-blue-500">
+                    {query.data?.brand}
+                  </Link>{" "}
+                  |{" "}
+                  <Link to={""} className="text-blue-500">
+                    {query.data?.category}
+                  </Link>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 md:gap-2 text-xl text-secondary my-2">
+                    {query.data?.rating.count === 0 ? (
+                      <>
+                        <FaRegStar />
+                        <FaRegStar />
+                        <FaRegStar />
+                        <FaRegStar />
+                        <FaRegStar />
+                        <span className="text-base">No ratings yet</span>
+                      </>
+                    ) : (
+                      <p>ratings available ({query.data?.rating.count})</p>
+                    )}
+                    {/* <FaStar />
                   <FaStar />
                   <FaStar />
                   <FaStar />
                   <FaRegStar />
-                  (222)
+                  (222) */}
+                  </div>
+                  <p className="text-2xl font-medium text-secondary">
+                    GH₵ {query.data?.price}
+                  </p>
                 </div>
-                <p className="text-2xl font-medium text-secondary">$411.12</p>
+                <div className="mb-2">
+                  <p className="font-medium my-1 text-lg">Product Specs</p>
+                  {query.data?.specs?.map((spec: Spec) => (
+                    <p key={spec.key}>
+                      <span className="font-medium">{spec.key}</span>:{" "}
+                      {spec.value}
+                    </p>
+                  ))}
+                </div>
               </div>
-              <div className="">
-                <p>
-                  <span className="font-medium">Operating System</span>: iOS 16
-                </p>
-                <p>
-                  <span className="font-medium">Operating System</span>: iOS 16
-                </p>
-                <p>
-                  <span className="font-medium">Operating System</span>: iOS 16
-                </p>
+              <div className="bg-secondary rounded p-1 text-white font-medium text-center cursor-pointer">
+                <p>Add To Cart</p>
               </div>
-            </div>
-            <div className="bg-secondary rounded p-1 text-white font-medium text-center cursor-pointer">
-              <p>Add To Cart</p>
             </div>
           </div>
-        </div>
+        ) : (
+          <p className="text-center">Error loading product data</p>
+        )}
       </div>
       <Footer />
     </div>

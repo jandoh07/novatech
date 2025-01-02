@@ -9,6 +9,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ProductProvider } from "./context/ProductProvider";
+import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<div>404</div>} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
           </Routes>
         </BrowserRouter>
       </ProductProvider>

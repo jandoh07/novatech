@@ -2,13 +2,15 @@ import { useState } from "react";
 import { customAxios } from "../axios/axios";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useMutation } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { useUserStore } from "../zustand/store";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [togglePassword, setTogglePassword] = useState(false);
+  const { setUser } = useUserStore();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +34,7 @@ const Login = () => {
         date.setDate(date.getDate() + 30);
         const expires = date.toUTCString();
 
-        localStorage.setItem("user", JSON.stringify({ expires, ...data }));
+        setUser({ expires, ...data });
 
         const referrer = document.referrer;
 
@@ -94,6 +96,12 @@ const Login = () => {
             </button>
           </div>
         </form>
+        <p className="text-center mt-1">
+          Don&apos; have account? Sign up{" "}
+          <Link to={"/signup"} className="font-medium">
+            here
+          </Link>
+        </p>
       </div>
     </div>
   );

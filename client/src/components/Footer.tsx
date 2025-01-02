@@ -18,10 +18,10 @@ const Footer = () => {
           <Link to={"/"}>
             <p>Home</p>
           </Link>
-          <Link to={""}>
+          <Link to={"/cart"}>
             <p>Cart</p>
           </Link>
-          <Link to={""}>
+          <Link to={"/wishlist"}>
             <p>Wishlist</p>
           </Link>
         </div>

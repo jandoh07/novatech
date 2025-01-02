@@ -61,6 +61,7 @@ const ProductInputField: React.FC<ProductInputFieldProps> = ({
           type={type}
           id={productId}
           required={required}
+          min={0}
           className="w-full border border-tertiary rounded p-1"
           onChange={handleInputChange}
           value={

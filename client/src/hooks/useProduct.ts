@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Product, Specs } from "../types/Product";
+import { Product, Spec } from "../types/Product";
 import { toast } from "react-toastify";
 import { customAxios } from "../axios/axios";
 import { useMutation } from "react-query";
@@ -10,7 +10,7 @@ export interface ExtendedFile extends File {
 }
 
 const useProduct = () => {
-  const [specs, setSpecs] = useState<Specs[]>([]);
+  const [specs, setSpecs] = useState<Spec[]>([]);
   const [images, setImages] = useState<ExtendedFile[]>([]);
   const [product, setProduct] = useState<Product>({
     name: "",
@@ -137,6 +137,7 @@ const useProduct = () => {
         imageUrl: [],
         category: "",
         stock: 0,
+        description: "",
       });
       setImages([]);
       setSpecs([]);
