@@ -18,7 +18,7 @@ const Home = () => {
         <Header />
         <SearchSection />
         <TopCategories />
-        <div className="w-[95%] md:w-[80%] mx-auto mt-10">
+        <div className="custom-container mt-10">
           <p className="text-2xl font-semibold my-4">Explore Our Products</p>
           <div className="grid grid-cols-2 md:grid-cols-4 justify-between items-center gap-2 md:gap-5">
             {query.data?.map((product: Product) => (

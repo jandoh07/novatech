@@ -33,7 +33,7 @@ const Product = () => {
         {query.isLoading ? (
           <p className="text-center mt-8">Loading...</p>
         ) : query.isSuccess ? (
-          <div className="w-[95%] md:w-[80%] mx-auto md:grid grid-cols-2 gap-2 my-4">
+          <div className="custom-container md:grid grid-cols-2 gap-2 my-4">
             <div className="w-full flex items-start gap-2 md:gap-4">
               <div className="space-y-2">
                 {query.data?.imageUrl.map((url: string, index: number) => (

@@ -9,6 +9,10 @@ export default {
         tertiary: "#384B70",
         accent: "#B84343",
       },
+      fontFamily: {
+        // sans: ["Inter", "sans-serif"],
+        roboto: ["Roboto", "serif"],
+      },
     },
   },
   plugins: [],

@@ -23,7 +23,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-[100svh] w-full">
       <Header />
-      <div className="border border-tertiary rounded min-h-[600px] w-[95%] md:w-[80%] mx-auto my-5">
+      <div className="border border-tertiary rounded min-h-[600px] custom-container my-5">
         <div className="flex justify-center items-center gap-3 bg-secondary p-2 text-white font-medium">
           <p
             className={

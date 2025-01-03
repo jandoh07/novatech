@@ -28,14 +28,13 @@ const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
   const handleLogout = async () => {
     await customAxios.post("/auth/logout");
 
-    localStorage.removeItem("user");
     logout();
     setIsAdmin(false);
   };
 
   return (
     <div className="border-b-2 border-tertiary py-2">
-      <div className="w-[95%] md:w-[80%] mx-auto flex items-center justify-between">
+      <div className="custom-container flex items-center justify-between">
         <div
           className={`flex items-center gap-2 ${
             toggleSearch ? "hidden md:flex" : null
@@ -101,12 +100,12 @@ const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
               </p>
             ) : (
               <>
-                <div className="text-xl cursor-pointer">
+                <Link to={"/wishlist"} className="text-xl cursor-pointer">
                   <IoMdHeartEmpty />
-                </div>
-                <div className="text-xl cursor-pointer">
+                </Link>
+                <Link to={"/cart"} className="text-xl cursor-pointer">
                   <IoCartOutline />
-                </div>
+                </Link>
               </>
             )}
           </div>
