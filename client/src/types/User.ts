@@ -3,4 +3,7 @@ export interface User {
   name: string;
   email: string;
   role: string;
+  cart: string[];
+  wishlist: string[];
+  _id: string;
 }

@@ -1,9 +1,17 @@
-const CartCheckout = () => {
+import React from "react";
+import { Product } from "../../types/Product";
+
+interface CartCheckoutProps {
+  cart: Product[];
+  totalPrice: number;
+}
+
+const CartCheckout: React.FC<CartCheckoutProps> = ({ cart, totalPrice }) => {
   return (
-    <div className="border border-tertiary rounded min-h-[15rem] w-full md:w-[15rem] p-3 text-md flex flex-col justify-evenly">
+    <div className="border border-tertiary rounded min-h-[15rem] w-full md:w-[15rem] p-3 text-md flex flex-col justify-evenly shadow-lg">
       <div className="flex justify-between items-center">
         <p className="font-medium">Total Items</p>
-        <p>4</p>
+        <p>{cart?.length}</p>
       </div>
       <div className="flex justify-between items-center">
         <p className="font-medium">Delivery</p>
@@ -11,7 +19,7 @@ const CartCheckout = () => {
       </div>
       <div className="flex justify-between items-center">
         <p className="font-medium">Total Price</p>
-        <p>GHC 9888</p>
+        <p>GHC {totalPrice + 250}</p>
       </div>
       <div>
         <p className="font-medium">Have discount coupon?</p>

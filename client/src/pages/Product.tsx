@@ -6,15 +6,18 @@ import { customAxios } from "../axios/axios";
 import { useQuery } from "react-query";
 import { useEffect, useState } from "react";
 import { Spec } from "../types/Product";
+import { ScaleLoader } from "react-spinners";
+import { useCartStore, useUserStore } from "../zustand/store";
+import useCart from "../hooks/useCart";
 
 const Product = () => {
   const { id } = useParams();
-  const user = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")!)
-    : {};
+  const { user } = useUserStore();
+  const { cart } = useCartStore();
   const [currentImage, setCurrentImage] = useState<string>("");
-  const isInWishlist =
-    user.wishlist && Array.isArray(user.wishlist) && user.wishlist.includes(id);
+  const { addToCart, removeFromCart } = useCart();
+  const isInWishlist = user && id && user.wishlist.includes(id);
+  const isInCart = user && id && (user.cart.includes(id) || cart.includes(id));
 
   const query = useQuery("product", async () => {
     const res = await customAxios.get(`/products/${id}`);
@@ -31,7 +34,9 @@ const Product = () => {
       <div>
         <Header />
         {query.isLoading ? (
-          <p className="text-center mt-8">Loading...</p>
+          <div className="mt-8 flex justify-center items-center w-full">
+            <ScaleLoader color={"#FF5F5F"} />
+          </div>
         ) : query.isSuccess ? (
           <div className="custom-container md:grid grid-cols-2 gap-2 my-4">
             <div className="w-full flex items-start gap-2 md:gap-4">
@@ -114,8 +119,22 @@ const Product = () => {
                   ))}
                 </div>
               </div>
-              <div className="bg-secondary rounded p-1 text-white font-medium text-center cursor-pointer">
-                <p>Add To Cart</p>
+              <div>
+                {isInCart ? (
+                  <button
+                    className="bg-secondary rounded p-1 text-white font-medium w-full"
+                    onClick={() => removeFromCart(id)}
+                  >
+                    Remove From Cart
+                  </button>
+                ) : (
+                  <button
+                    className="bg-secondary rounded p-1 text-white font-medium w-full"
+                    onClick={() => id && addToCart(id)}
+                  >
+                    Add To Cart
+                  </button>
+                )}
               </div>
             </div>
           </div>

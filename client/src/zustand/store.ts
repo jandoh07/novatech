@@ -18,3 +18,20 @@ export const useUserStore = create<UserState>()(
         { name: 'user' }
     )
 )
+
+interface CartState {
+    cart: string[];
+    add_to_cart: (id: string) => void;
+    remove_from_cart: (product: string) => void;
+}
+
+export const useCartStore = create<CartState>()(
+    persist(
+        (set) => ({
+            cart: [],
+            add_to_cart: (id: string) => set((state) => ({ cart: [...state.cart, id] })),
+            remove_from_cart: (id: string) => set((state) => ({ cart: state.cart.filter((p) => p !== id) })),
+        }),
+        { name: 'cart' }
+    )
+)

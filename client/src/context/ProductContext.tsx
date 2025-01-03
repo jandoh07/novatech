@@ -1,14 +1,14 @@
 import React from "react";
 import { ExtendedFile } from "../hooks/useProduct";
-import { Product, Specs } from "../types/Product";
+import { Product, Spec } from "../types/Product";
 import { UseMutationResult } from "react-query";
 
 interface ProductContextType {
   product: Product;
   setProduct: React.Dispatch<React.SetStateAction<Product>>;
   handleCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  specs: Specs[];
-  setSpecs: React.Dispatch<React.SetStateAction<Specs[]>>;
+  specs: Spec[];
+  setSpecs: React.Dispatch<React.SetStateAction<Spec[]>>;
   images: ExtendedFile[];
   setImages: React.Dispatch<React.SetStateAction<ExtendedFile[]>>;
   getPreSignedUrl: () => Promise<void>;
