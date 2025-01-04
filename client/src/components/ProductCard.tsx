@@ -1,19 +1,17 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Product } from "../types/Product";
+import { useUserStore } from "../zustand/store";
+import useWishlist from "../hooks/useWishlist";
 
 interface ProductProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductProps> = ({ product }) => {
-  const user = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")!)
-    : {};
-  const isInWishlist =
-    user.wishlist &&
-    Array.isArray(user.wishlist) &&
-    user.wishlist.includes(product._id);
+  const { user } = useUserStore();
+  const { addToWishlist, removeFromWishlist } = useWishlist();
+  const isInWishlist = user && user.wishlist.includes(product._id!);
   return (
     <div className="w-full h-[16rem] md:h-[20rem] overflow-hidden shadow-custom py-2 rounded-md relative flex flex-col justify-between">
       <div>
@@ -26,11 +24,17 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
         </Link>
       </div>
       {isInWishlist ? (
-        <div className="absolute top-2 right-2 rounded-full p-[0.3rem] hover:bg-secondary hover:bg-opacity-35 cursor-pointer">
+        <div
+          className="absolute top-2 right-2 rounded-full p-[0.3rem] hover:bg-secondary hover:bg-opacity-35 cursor-pointer"
+          onClick={() => removeFromWishlist(product._id!)}
+        >
           <FaHeart className="text-lg text-secondary" />
         </div>
       ) : (
-        <div className="absolute top-2 right-2 bg-secondary opacity-50 rounded-full p-[0.3rem] hover:opacity-80 cursor-pointer">
+        <div
+          className="absolute top-2 right-2 bg-secondary opacity-50 rounded-full p-[0.3rem] hover:opacity-80 cursor-pointer"
+          onClick={() => addToWishlist(product._id!)}
+        >
           <FaRegHeart className="text-lg text-white" />
         </div>
       )}

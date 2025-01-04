@@ -9,6 +9,7 @@ import { Spec } from "../types/Product";
 import { ScaleLoader } from "react-spinners";
 import { useCartStore, useUserStore } from "../zustand/store";
 import useCart from "../hooks/useCart";
+import useWishlist from "../hooks/useWishlist";
 
 const Product = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const Product = () => {
   const { addToCart, removeFromCart } = useCart();
   const isInWishlist = user && id && user.wishlist.includes(id);
   const isInCart = user && id && (user.cart.includes(id) || cart.includes(id));
+  const { addToWishlist, removeFromWishlist } = useWishlist();
 
   const query = useQuery("product", async () => {
     const res = await customAxios.get(`/products/${id}`);
@@ -70,9 +72,15 @@ const Product = () => {
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-2xl font-medium">{query.data?.name}</p>
                   {isInWishlist ? (
-                    <FaHeart className="shrink-0 text-2xl text-secondary" />
+                    <FaHeart
+                      className="shrink-0 text-2xl text-secondary cursor-pointer"
+                      onClick={() => removeFromWishlist(query.data._id)}
+                    />
                   ) : (
-                    <FaRegHeart className="shrink-0 text-2xl text-secondary" />
+                    <FaRegHeart
+                      className="shrink-0 text-2xl text-secondary cursor-pointer"
+                      onClick={() => addToWishlist(query.data._id)}
+                    />
                   )}
                 </div>
                 <div className="font-medium my-2">
