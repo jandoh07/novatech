@@ -47,30 +47,24 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
         <div className="flex justify-between items-center">
           <Link to={`/product/${product._id}`}>
             {product.discount ? (
-              <p className="text-xl text-secondary font-medium">
-                GHC{" "}
-                {product.price -
-                  product.price * (product.discount.percentage / 100)}
-              </p>
+              <>
+                <p className="text-lg text-secondary font-medium">
+                  GHC{" "}
+                  {product.price -
+                    product.price * (product.discount.percentage / 100)}
+                </p>
+                <p className="text-xs text-secondary font-medium line-through">
+                  GHC {product.price}
+                </p>
+              </>
             ) : (
               <p className="text-xl text-secondary font-medium">
                 GHC {product.price}
               </p>
             )}
           </Link>
-          {product.stock <= 5 && product.discount ? (
-            <>
-              <p className="text-sm text-red-500">
-                {product.discount.percentage}% off
-              </p>
-              <p className="text-red-500 text-sm">Only {product.stock} left</p>
-            </>
-          ) : product.discount ? (
-            <p className="text-sm text-red-500">
-              {product.discount.percentage}% off
-            </p>
-          ) : product.stock <= 5 ? (
-            <p className="text-red-500 text-sm">Only {product.stock} left</p>
+          {product.stock <= 5 ? (
+            <p className="text-red-500 text-sm">{product.stock} left</p>
           ) : null}
         </div>
       </div>

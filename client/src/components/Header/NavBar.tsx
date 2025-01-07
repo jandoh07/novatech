@@ -10,10 +10,12 @@ import {
   IoPersonOutline,
   IoSearchOutline,
 } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { customAxios } from "../../axios/axios";
 import useValidateUser from "../../hooks/useValidateUser";
 import { useUserStore } from "../../zustand/store";
+import { useQuery } from "react-query";
+import { ScaleLoader } from "react-spinners";
 
 interface NavBarProps {
   toggleSidebar: boolean;
@@ -22,14 +24,32 @@ interface NavBarProps {
 
 const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
   const [toggleSearch, setToggleSearch] = useState(false);
+  const [search, setSearch] = useState("");
   const { user, isAdmin, setIsAdmin } = useValidateUser();
   const { logout } = useUserStore();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await customAxios.post("/auth/logout");
 
     logout();
     setIsAdmin(false);
+  };
+
+  const getSuggestions = useQuery(
+    ["suggestions", search],
+    async () => {
+      const res = await customAxios.get(`/search/suggestions/${search}`);
+      return res.data;
+    },
+    {
+      enabled: search !== "",
+    }
+  );
+
+  const handleSearch = () => {
+    navigate(`/search?query=${search}`);
+    setToggleSearch(false);
   };
 
   return (
@@ -51,16 +71,45 @@ const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
           </Link>
         </div>
         {toggleSearch ? (
-          <div className="flex items-center border border-secondary rounded-lg overflow-hidden pr-1 w-full ml-2">
-            <input
-              type="text"
-              placeholder="Search for products"
-              className="w-full px-2 py-1 outline-none"
-            />
-            <IoMdClose
-              className="text-lg cursor-pointer"
-              onClick={() => setToggleSearch(false)}
-            />
+          <div className="rounded-lg w-full ml-2">
+            <div className="border border-secondary flex items-center rounded-lg overflow-hidden pr-1">
+              <input
+                type="text"
+                placeholder="Search for products"
+                className="w-full px-2 py-1 outline-none"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              />
+              <IoMdClose
+                className="text-lg cursor-pointer"
+                onClick={() => setToggleSearch(false)}
+              />
+            </div>
+            <div className="relative z-50">
+              <div className="absolute top-0 left-0 w-full bg-white">
+                {getSuggestions.isLoading && (
+                  <div className="flex justify-center items-center w-full h-[5rem]">
+                    <ScaleLoader color={"#FF5F5F"} />
+                  </div>
+                )}
+                {getSuggestions.isSuccess && (
+                  <div className="text-gray-700">
+                    {getSuggestions.data.map((suggestion: string) => (
+                      <Link
+                        to={`/search?query=${suggestion}`}
+                        key={suggestion}
+                        onClick={() => setToggleSearch(false)}
+                      >
+                        <div className="cursor-pointer px-2 py-1 hover:bg-gray-100 border-b border-gray-300">
+                          {suggestion}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         ) : (
           <div className="flex gap-2 items-center">
