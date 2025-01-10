@@ -3,14 +3,22 @@ import Product from "../models/productModel.js";
 export const search = async (req, res) => {
   const { query } = req.params;
   const { limit } = req.query;
+  const { brand, price, rating, category } = req.body;
 
   try {
-    const results = await Product.find({
+    const baseQuery = {
       $or: [
         { name: { $regex: query, $options: "i" } },
         { category: { $regex: query, $options: "i" } },
       ],
-    }).limit(parseInt(limit));
+    };
+
+    if (brand) baseQuery.brand = { $in: brand };
+    if (price) baseQuery.price = { $gte: price[0], $lte: price[1] };
+    if (rating) baseQuery.rating = { $gte: rating.value };
+    if (category) baseQuery.category = { $in: category };
+
+    const results = await Product.find(baseQuery).limit(parseInt(limit));
 
     res.status(200).json(results);
   } catch (error) {
