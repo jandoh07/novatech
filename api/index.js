@@ -7,7 +7,6 @@ import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
-import searchRoutes from "./routes/searchRoutes.js";
 import s3Routes from "./routes/s3Routes.js";
 
 dotenv.config();
@@ -22,7 +21,6 @@ app.use("/auth", authRoutes);
 app.use("/products", productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/wishlist", wishlistRoutes);
-app.use("/search", searchRoutes);
 app.use("/s3", s3Routes);
 
 mongoose

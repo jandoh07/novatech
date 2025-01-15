@@ -1,5 +1,4 @@
 import User from "../models/userModel.js";
-import Product from "../models/productModel.js";
 
 export const addToCart = async (req, res) => {
   const { id } = req.params;
@@ -68,17 +67,4 @@ export const clearCart = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-export const getCartProducts = async (req, res) => {
-  try {
-    const { productIds } = req.body;
-    const products = await Product.find({
-      _id: {
-        $in: productIds,
-      },
-    });
-
-    res.json(products);
-  } catch (error) {}
 };
