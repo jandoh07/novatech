@@ -1,5 +1,7 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ProductContext } from "../../../context/ProductContext";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
 
 interface ProductInputFieldProps {
   name: string;
@@ -23,6 +25,7 @@ const ProductInputField: React.FC<ProductInputFieldProps> = ({
 }) => {
   const context = useContext(ProductContext);
   const { setProduct, product, discount, setDiscount } = context!;
+  const { quill, quillRef } = useQuill();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -42,6 +45,18 @@ const ProductInputField: React.FC<ProductInputFieldProps> = ({
       [id]: value,
     }));
   };
+
+  useEffect(() => {
+    if (quill) {
+      quill.on("text-change", () => {
+        setProduct((prevData) => ({
+          ...prevData,
+          description: quill.root.innerHTML,
+        }));
+      });
+    }
+  }, [quill, setProduct]);
+
   return (
     <div>
       <label htmlFor={productId}>
@@ -49,13 +64,7 @@ const ProductInputField: React.FC<ProductInputFieldProps> = ({
         {required && <span className="text-red-500">*</span>}
       </label>
       {productId === "description" ? (
-        <textarea
-          id={productId}
-          required={required}
-          className="w-full border border-tertiary rounded p-1"
-          value={product.description}
-          onChange={handleInputChange}
-        ></textarea>
+        <div ref={quillRef} className="min-h-32"></div>
       ) : (
         <input
           type={type}

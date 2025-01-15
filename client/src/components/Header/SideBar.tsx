@@ -20,11 +20,22 @@ const SideBar = ({ toggleSidebar, setToggleSidebar }: SideBarProps) => {
         >
           <IoMdClose className="text-2xl" />
         </div>
-        <div className="flex flex-col gap-4">
-          <Link to={"/"}>Home</Link>
-          <Link to={"/"}>Home</Link>
-          <Link to={"/"}>Home</Link>
-          <Link to={"/"}>Home</Link>
+        <p className="text-lg font-medium my-2">Categories</p>
+        <div className="flex flex-col gap-3 pl-2">
+          <Link to={`/search?query=${encodeURIComponent("Phones & Tablets")}`}>
+            Phones & Tablets
+          </Link>
+          <Link
+            to={`/search?query=${encodeURIComponent("Computers & Laptops")}`}
+          >
+            Computers & Laptops
+          </Link>
+          <Link to={`/search?query=${encodeURIComponent("Accessories")}`}>
+            Accessories
+          </Link>
+          <Link to={`/search?query=${encodeURIComponent("Gaming")}`}>
+            Gaming
+          </Link>
         </div>
       </div>
       <div
