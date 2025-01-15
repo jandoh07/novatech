@@ -23,7 +23,7 @@ const useProduct = () => {
   const debounce = React.useRef<number | null>(null);
   const [progress, setProgress] = useState<string>("0");
   const [toggleAddSpec, setToggleAddSpec] = useState(false);
-  const [discount, setDiscount] = useState({
+  const [discount, setDiscount] = useState<{ percentage: string | number; expiry: string | number }>({
     percentage: "",
     expiry: "",
   });

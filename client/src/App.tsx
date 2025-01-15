@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ProductProvider } from "./context/ProductProvider";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
+import { FilterProvider } from "./context/FilterProvider";
 
 const queryClient = new QueryClient();
 
@@ -18,20 +19,22 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ProductProvider>
-        <BrowserRouter>
-          <ToastContainer />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/product/:id" element={<Product />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<div>404</div>} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-          </Routes>
-        </BrowserRouter>
+        <FilterProvider>
+          <BrowserRouter>
+            <ToastContainer />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/product/:id" element={<Product />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="*" element={<div>404</div>} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+            </Routes>
+          </BrowserRouter>
+        </FilterProvider>
       </ProductProvider>
     </QueryClientProvider>
   );

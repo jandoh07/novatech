@@ -3,13 +3,14 @@ import { IoSearch } from "react-icons/io5";
 import { useQuery } from "react-query";
 import { customAxios } from "../../axios/axios";
 import { ScaleLoader } from "react-spinners";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SearchSection = () => {
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const getSuggestions = useQuery(
-    "suggestions",
+    ["suggestions", search],
     async () => {
       const res = await customAxios.get(`/search/suggestions/${search}`);
       return res.data;
@@ -19,10 +20,18 @@ const SearchSection = () => {
     }
   );
 
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/search?query=${search}`);
+  };
+
   return (
     <div className="bg-secondary h-[300px]">
       <div className="custom-container h-full flex flex-col items-center justify-center">
-        <form className="flex items-center bg-accent rounded h-[50px] w-full md:w-[60%] overflow-hidden pr-1">
+        <form
+          className="flex items-center bg-accent rounded h-[50px] w-full md:w-[60%] overflow-hidden pr-1"
+          onSubmit={(e) => handleSearch(e)}
+        >
           <input
             type="text"
             className="h-full w-full outline-none bg-transparent px-2 text-white text-lg placeholder:text-white"

@@ -1,10 +1,12 @@
+import { Link } from "react-router-dom";
+
 const categories = [
   {
     name: "Phones & Tablets",
     image: "/phones&tablets.jpg",
   },
   {
-    name: "Laptops & Computers",
+    name: "Computers & Laptops",
     image: "/laptops&computers.jpg",
   },
   {
@@ -23,7 +25,8 @@ const TopCategories = () => {
       <h1 className="text-2xl font-semibold my-4">Top Categories</h1>
       <div className="flex items-center gap-4 overflow-x-scroll no-scrollbar">
         {categories.map((category) => (
-          <div
+          <Link
+            to={`/search?query=${encodeURIComponent(category.name)}`}
             className="relative w-[14rem] md:w-[20rem] shrink-0 overflow-hidden rounded-lg"
             key={category.name}
           >
@@ -35,7 +38,7 @@ const TopCategories = () => {
             <div className="font-semibold absolute top-0 left-0 bg-secondary p-1 pr-4 text-white bg-opacity-65">
               {category.name}
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
