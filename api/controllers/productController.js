@@ -2,16 +2,30 @@ import Product from "../models/productModel.js";
 
 export const getProducts = async (req, res) => {
   try {
-    const { category, page, limit } = req.query;
-    const skip = ((page || 1) - 1) * limit;
+    const { category, page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+
+    let products;
+    let totalCount;
 
     if (category) {
-      const products = await Product.find({ category }).skip(skip).limit(limit);
-      return res.json(products);
+      totalCount = await Product.countDocuments({ category });
+      products = await Product.find({ category })
+        .skip(skip)
+        .limit(parseInt(limit));
+    } else {
+      totalCount = await Product.countDocuments({});
+      products = await Product.find({}).skip(skip).limit(parseInt(limit));
     }
 
-    const products = await Product.find({}).skip(skip).limit(limit);
-    res.json(products);
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.json({
+      products,
+      totalCount,
+      totalPages,
+      currentPage: parseInt(page),
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -110,8 +124,10 @@ export const deleteProduct = async (req, res) => {
 
 export const search = async (req, res) => {
   const { query } = req.params;
-  const { limit, brand, price, rating, category } = req.query;
+  const { limit = 10, page = 1, brand, price, rating, category } = req.query;
   try {
+    const skip = (page - 1) * limit;
+
     const baseQuery = {
       $or: [
         { name: { $regex: query, $options: "i" } },
@@ -128,9 +144,15 @@ export const search = async (req, res) => {
     if (rating) baseQuery.rating = { $gte: parseInt(rating.value) };
     if (category) baseQuery.category = { $in: category.split(",") };
 
-    const results = await Product.find(baseQuery).limit(parseInt(limit));
+    const totalCount = await Product.countDocuments(baseQuery);
+    const products = await Product.find(baseQuery)
+      .skip(skip)
+      .limit(parseInt(limit));
+    const totalPages = Math.ceil(totalCount / limit);
 
-    res.status(200).json(results);
+    res
+      .status(200)
+      .json({ products, totalCount, totalPages, currentPage: parseInt(page) });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
