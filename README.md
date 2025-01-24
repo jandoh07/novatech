@@ -1,50 +1,66 @@
-# React + TypeScript + Vite
+# NovaTech E-commerce App
+NovaTech is a full-stack e-commerce application built using the MERN (MongoDB, Express, React, Node.js) stack. It allows users to browse products, add them to a cart or wishlist etc. It also includes features for admin management and secure authentication. Might also add more features in the future(improvements).
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Features
+- User authentication
+- CRUD operations for products (admin)
+- Add products to cart
+- Add products to wishlist
+- Search for products
+- Filter search results
 
-Currently, two official plugins are available:
+## Technologies
+- Frontend: React, Zustand, Tailwind CSS
+- Backend: Node.js, Express
+- Database: MongoDB
+- Cloud Storage: AWS S3
+- Authentication: JWT, bcryptjs
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Installation
+1. Clone the repository
+    ```bash
+    git clone https://github.com/jandoh07/novatech.git
+    ```
+2. Set up environment variables
+   - Backend (api/.env)
+      ```bash
+      PORT=5000
+      MONGODB_URI=your-mongodb-connection-uri
+      JWT_SECRET=your-jwt-secret
+      AWS_ACCESS_KEY=your-aws-access-key
+      AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+      AWS_BUCKET_NAME=your-bucket-name
+      AWS_REGION=your-aws-region
+      CLIENT_URL=http://localhost:5173
+      NODE_ENV=development
+      ```
+    - Frontend (client/.env)
+        ```bash
+        VITE_API_URL=http://localhost:5000
+        ```
+3. Install dependencies
+   - Backend
+      ```bash
+      cd api
+      npm install
+      ```
+    - Frontend
+      ```bash
+      cd ../client
+      npm install
+      ```
+4. Run the application
+   - Backend
+      ```bash
+      cd api
+      npm start
+      ```
+    - Frontend
+      ```bash
+      cd client
+      npm run dev
+      ```
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.txt) file for details.
+ 
