@@ -27,7 +27,7 @@ const Home = () => {
             </div>
           )}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-between items-center gap-2 md:gap-5">
-            {query.data?.map((product: Product) => (
+            {query.data?.products.map((product: Product) => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>

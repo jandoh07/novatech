@@ -3,12 +3,12 @@ import { IoMdClose } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { useContext, useState } from "react";
 import { ProductContext } from "../../../context/ProductContext";
-import { Specs } from "../../../types/Product";
+import { Spec } from "../../../types/Product";
 
 const ProductSpecifcation = () => {
   const context = useContext(ProductContext);
   const { specs, setSpecs, toggleAddSpec, setToggleAddSpec } = context!;
-  const [currentSpec, setCurrentSpec] = useState<Specs | null>(null);
+  const [currentSpec, setCurrentSpec] = useState<Spec | null>(null);
 
   const handleNewSpec = () => {
     if (currentSpec) {
@@ -17,16 +17,6 @@ const ProductSpecifcation = () => {
       setToggleAddSpec(false);
     }
   };
-
-  // const handleEdit = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   console.log(e.target.value);
-  //   setSpecs((prev) =>
-  //     prev.map((s, i) => (i === index ? { ...s, value: e.target.value } : s))
-  //   );
-  // };
 
   return (
     <div>

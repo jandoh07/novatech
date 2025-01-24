@@ -1,9 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FilterContext } from "../context/FilterContext";
 import { useQuery } from "react-query";
 import { customAxios } from "../axios/axios";
-import { Product } from "../types/Product";
+import { Pagination, Product } from "../types/Product";
 
 const useSearchResults = () => {
     const [searchParams] = useSearchParams();
@@ -11,6 +11,12 @@ const useSearchResults = () => {
     const [brands, setBrands] = useState<string[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [products, setProducts] = useState<Product[] | null>(null);
+    const [paginationInfo, setPaginationInfo] = useState<Pagination>({
+      totalPages: 0,
+      currentPage: 0,
+      totalCount: 0,
+    });
+    const [page, setPage] = useState(1);
     const filterContext = useContext(FilterContext);
     const { selectedItems, setSelectedItems } = filterContext!;
     const brand = new Set<string>();
@@ -19,22 +25,23 @@ const useSearchResults = () => {
     const searchTermQuery = useQuery(
       ["search", searchTerm],
       async () => {
-        const res = await customAxios.get(`/search/${searchTerm}`);
+        const res = await customAxios.get(`/products/search/${searchTerm}?page=${page}&limit=15`);
   
-        res.data.map((product: Product) => {
+        res.data.products.map((product: Product) => {
           brand.add(product.brand);
           category.add(product.category);
         });
   
         setBrands(Array.from(brand));
         setCategories(Array.from(category));
-        setProducts(res.data);
+        setProducts(res.data.products);
         setSelectedItems({
           brand: [],
           category: [],
           rating: [],
           price: [],
         });
+        setPaginationInfo({totalPages: res.data.totalPages, currentPage: res.data.currentPage,totalCount: res.data.totalCount});
   
         return res.data;
       },
@@ -68,16 +75,29 @@ const useSearchResults = () => {
       if (ratingParam !== undefined)
         params.append("rating", ratingParam.toString());
       if (priceParam) params.append("price", priceParam);
+      params.append("page", page.toString());
+      params.append("limit", "15");
   
       const res = await customAxios.get(
-        `/search/${queryParam}?${params.toString()}`
+        `/products/search/${queryParam}?${params.toString()}`
       );
   
-      setProducts(res.data);
+      setProducts(res.data.products);
+      setPaginationInfo({totalPages: res.data.totalPages, currentPage: res.data.currentPage,totalCount: res.data.totalCount});
       return res.data;
+    }, {
+      enabled: selectedItems.brand.length > 0 || selectedItems.category.length > 0 || selectedItems.rating.length > 0 || selectedItems.price.length > 0,
     });
 
-    return { searchTermQuery, filterQuery, searchTerm, brands, categories, products, setSelectedItems };
+    useEffect(() => {
+      if (selectedItems.brand.length === 0 && selectedItems.category.length === 0 && selectedItems.rating.length === 0 && selectedItems.price.length === 0) {
+        searchTermQuery.refetch();
+      } else {
+        filterQuery.refetch();
+      }
+    }, [page]);
+
+    return { searchTermQuery, filterQuery, searchTerm, brands, categories, products, setSelectedItems, paginationInfo, page, setPage };
 }
 
 export default useSearchResults

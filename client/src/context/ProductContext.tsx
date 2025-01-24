@@ -12,7 +12,12 @@ interface ProductContextType {
   images: ExtendedFile[];
   setImages: React.Dispatch<React.SetStateAction<ExtendedFile[]>>;
   getPreSignedUrl: () => Promise<void>;
-  addProductMutation: UseMutationResult<void, unknown, void, unknown>;
+  addProductMutation: UseMutationResult<
+    unknown,
+    unknown,
+    string | null | undefined,
+    unknown
+  >;
   progress: string;
   toggleAddSpec: boolean;
   setToggleAddSpec: React.Dispatch<React.SetStateAction<boolean>>;

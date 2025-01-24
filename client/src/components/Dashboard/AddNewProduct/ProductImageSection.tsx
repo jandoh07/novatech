@@ -1,76 +1,16 @@
 import React, { useContext } from "react";
 import { IoMdClose } from "react-icons/io";
 import { ProductContext } from "../../../context/ProductContext";
-import { toast } from "react-toastify";
-import imageCompression from "browser-image-compression";
+import useProductImage from "../../../hooks/useProductImage";
+import { useSearchParams } from "react-router-dom";
 
 const ProductImageSection = () => {
   const context = useContext(ProductContext);
   const { images, setImages } = context!;
   const imageRef = React.useRef<HTMLInputElement>(null);
   const mainImageRef = React.useRef<HTMLInputElement>(null);
-
-  const compressImage = (selectedImages: File[]) => {
-    toast.info("Optimizing images...");
-
-    selectedImages.forEach((image) => {
-      if (image.size > 150 * 1024) {
-        const compressedImage = imageCompression(image, {
-          maxSizeMB: 0.15,
-          maxWidthOrHeight: 500,
-        });
-
-        compressedImage
-          .then((compressedImage) => {
-            setImages((prevImages) => [...prevImages, compressedImage]);
-          })
-          .catch(() => {
-            toast.error("An error occurred while compressing image");
-          });
-      } else {
-        setImages((prevImages) => [...prevImages, image]);
-      }
-    });
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length + images.length <= 7) {
-      const selectedImages = Array.from(e.target.files);
-
-      if (selectedImages.length > 0) {
-        compressImage(selectedImages);
-      }
-    } else {
-      toast.error("You can only upload a maximum of 7 images");
-      const selectedImages = e.target.files
-        ? Array.from(e.target.files).slice(0, 7 - images.length)
-        : [];
-
-      if (selectedImages.length > 0) {
-        compressImage(selectedImages);
-      }
-    }
-  };
-
-  const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0].size > 150 * 1024) {
-      toast.info("Optimizing image...");
-      const selectedImage = e.target.files[0];
-      imageCompression(selectedImage, {
-        maxSizeMB: 0.15,
-        maxWidthOrHeight: 500,
-      })
-        .then((compressedImage) => {
-          setImages((prevImages) => [compressedImage, ...prevImages.slice(1)]);
-        })
-        .catch(() => {
-          toast.error("An error occurred while compressing image");
-        });
-    } else if (e.target.files) {
-      const selectedImage = e.target.files[0];
-      setImages((prevImages) => [selectedImage, ...prevImages.slice(1)]);
-    }
-  };
+  const { handleImageChange, handleMainImageChange } = useProductImage();
+  const [searchParams] = useSearchParams();
 
   return (
     <>
@@ -78,7 +18,11 @@ const ProductImageSection = () => {
         {images.length > 0 ? (
           <>
             <img
-              src={URL.createObjectURL(images[0])}
+              src={
+                (images[0].File && URL.createObjectURL(images[0].File)) ||
+                (searchParams.get("edit") && images[0].url) ||
+                ""
+              }
               alt="product"
               className="w-full h-full object-contain"
             />
@@ -123,7 +67,10 @@ const ProductImageSection = () => {
               className="border border-dashed border-tertiary rounded size-20 md:size-[8rem] mx-2 my-2 text-center flex justify-center items-center relative"
             >
               <img
-                src={URL.createObjectURL(image)}
+                src={
+                  (searchParams.get("edit") && image.url) ||
+                  URL.createObjectURL(image.File)
+                }
                 alt="product"
                 className="w-full h-full object-contain"
               />

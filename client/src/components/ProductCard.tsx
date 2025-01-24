@@ -12,6 +12,9 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
   const { user } = useUserStore();
   const { addToWishlist, removeFromWishlist } = useWishlist();
   const isInWishlist = user && user.wishlist.includes(product._id!);
+  const isDiscountValid =
+    product.discount &&
+    new Date(product.discount.expiry).getTime() > Date.now();
   return (
     <div className="w-full h-[16rem] md:h-[20rem] overflow-hidden shadow-custom py-2 rounded-md relative flex flex-col justify-between">
       <div>
@@ -46,7 +49,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
         </Link>
         <div className="flex justify-between items-center">
           <Link to={`/product/${product._id}`}>
-            {product.discount ? (
+            {isDiscountValid && product.discount ? (
               <>
                 <p className="text-lg text-secondary font-medium">
                   GHC{" "}

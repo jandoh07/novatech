@@ -27,3 +27,9 @@ export interface Rating {
     count: number;
     value: number;
 }
+
+export interface Pagination {
+    totalPages: number;
+    currentPage: number;
+    totalCount: number;
+}

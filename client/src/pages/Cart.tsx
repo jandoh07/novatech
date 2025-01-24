@@ -18,10 +18,10 @@ const Cart = () => {
     "cart",
     async () => {
       if (user && user.cart.length > 0) {
-        const res = await customAxios.post("/cart", { productIds: user.cart });
+        const res = await customAxios.get(`/products/${user.cart.join(",")}`);
         return res.data;
       } else if (cart.length > 0) {
-        const res = await customAxios.post("/cart", { productIds: cart });
+        const res = await customAxios.get(`/products/${cart.join(",")}`);
         return res.data;
       }
       return [];

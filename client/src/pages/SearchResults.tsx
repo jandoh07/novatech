@@ -20,6 +20,8 @@ const SearchResults = () => {
     brands,
     categories,
     paginationInfo,
+    page,
+    setPage,
   } = useSearchResults();
 
   return (
@@ -69,7 +71,11 @@ const SearchResults = () => {
                       <ProductCard product={product} key={product._id} />
                     ))}
                   </div>
-                  <Pagination paginationInfo={paginationInfo} />
+                  <Pagination
+                    paginationInfo={paginationInfo}
+                    page={page}
+                    setPage={setPage}
+                  />
                 </div>
               )}
           </div>

@@ -5,8 +5,11 @@ import { customAxios } from "../axios/axios";
 import { useMutation } from "react-query";
 import axios from "axios";
 
-export interface ExtendedFile extends File {
+export interface ExtendedFile {
+  File: File;
+  url?: string;
   progress?: number;
+  status?: "ok" | "changed" | "deleted";
 }
 
 const useProduct = () => {
@@ -72,20 +75,26 @@ const useProduct = () => {
 
   const getPreSignedUrl = async () => {
     const files = images.map(image => {
-      const fileNameWithoutExtension = image.name.split('.').slice(0, -1).join('.');
-      return { fileName: fileNameWithoutExtension, fileType: image.type };
+      if (!image.File) return;
+      const fileNameWithoutExtension = image.File.name.split('.').slice(0, -1).join('.');
+      return { fileName: fileNameWithoutExtension, fileType: image.File.type };
     });
   
+    if (!files || files.length === 0 || !files[0]) return {url: []}
+
     const res = await customAxios.post("/s3", { files });
     return res.data;
   };
 
-
-  const addProductMutation = useMutation(async () => {
+  const addProductMutation = useMutation(async (params: string | null = null) => {
     const preSignedUrls = await getPreSignedUrl();
     const imageUrls: string[] = [];
-    const totalSize = images.reduce((acc, curr) => acc + curr.size, 0);
+    const totalSize = images.reduce((acc, curr) => acc + (curr.File?.size || 0), 0);
     let uploadedSize = 0;
+
+    images.map((image) => {
+      if (image.url && image.status === "ok") imageUrls.push(image.url)
+    })
 
     for (let i = 0; i < preSignedUrls.url.length; i++) {
       await axios
@@ -113,6 +122,25 @@ const useProduct = () => {
       })
   }
 
+
+  if (params) {
+    const res = await customAxios.put(`/products/${product._id!}`, {
+      ...product,
+      imageUrl: imageUrls,
+      specs: specs
+        .map((spec) => ({ key: spec.key, value: spec.value }))
+        .filter((spec) => spec.value !== ""),
+      ...(discount.percentage !== "" && discount.expiry !== "" && {
+        discount: {
+          percentage: discount.percentage,
+          expiry: new Date(new Date().setDate(new Date().getDate() + Number(discount.expiry))),
+        },
+      }),
+    });
+
+    return res.data
+  }
+
         const res = await customAxios.post("/products", {
       ...product,
       imageUrl: imageUrls,
@@ -128,7 +156,12 @@ const useProduct = () => {
     });
     return res.data;
 }, {
-    onSuccess: () => {
+    onSuccess: (data, params) => {
+      if (params) {
+        toast.success("Product edited successfully")
+        setProduct(data);
+        setProgress("0");
+      } else {
       toast.success("Product added successfully");
       setProduct({
         name: "",
@@ -146,9 +179,15 @@ const useProduct = () => {
         percentage: "",
         expiry: "",
       });
+    }
     },
-    onError: () => {
+    onError: (error,params) => {
+      if (params) {
+      toast.error("Failed to edit product");
+    } else {
       toast.error("Failed to add product");
+    }
+
     },
   });
 

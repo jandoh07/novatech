@@ -39,7 +39,9 @@ const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
   const getSuggestions = useQuery(
     ["suggestions", search],
     async () => {
-      const res = await customAxios.get(`/search/suggestions/${search}`);
+      const res = await customAxios.get(
+        `/products/search/suggestions/${search}`
+      );
       return res.data;
     },
     {
@@ -48,8 +50,8 @@ const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
   );
 
   const handleSearch = () => {
-    navigate(`/search?query=${search}`);
     setToggleSearch(false);
+    navigate(`/search?query=${search}`);
   };
 
   return (
@@ -80,6 +82,7 @@ const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                autoFocus={true}
               />
               <IoMdClose
                 className="text-lg cursor-pointer"

@@ -16,10 +16,13 @@ const Wishlist = () => {
 
   const query = useQuery("wishlist", async () => {
     if (user && user.wishlist.length > 0) {
-      const res = await customAxios.post("/cart", {
-        productIds: user.wishlist,
-      });
-      return res.data;
+      const res = await customAxios.get(`/products/${user.wishlist.join(",")}`);
+
+      if (res.data?.length) {
+        return res.data;
+      } else {
+        return [res.data];
+      }
     }
     return [];
   });

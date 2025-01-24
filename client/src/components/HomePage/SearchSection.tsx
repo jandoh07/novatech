@@ -12,7 +12,9 @@ const SearchSection = () => {
   const getSuggestions = useQuery(
     ["suggestions", search],
     async () => {
-      const res = await customAxios.get(`/search/suggestions/${search}`);
+      const res = await customAxios.get(
+        `/products/search/suggestions/${search}`
+      );
       return res.data;
     },
     {

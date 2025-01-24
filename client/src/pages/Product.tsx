@@ -27,10 +27,6 @@ const Product = () => {
     return res.data;
   });
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, []);
-
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <div>
@@ -85,11 +81,17 @@ const Product = () => {
                     )}
                   </div>
                   <div className="font-medium my-2">
-                    <Link to={""} className="text-blue-500">
+                    <Link
+                      to={`/search?query=${query.data.brand}&limit=15`}
+                      className="text-blue-500"
+                    >
                       {query.data?.brand}
                     </Link>{" "}
                     |{" "}
-                    <Link to={""} className="text-blue-500">
+                    <Link
+                      to={`/search?query=${query.data.category}&limit=15`}
+                      className="text-blue-500"
+                    >
                       {query.data?.category}
                     </Link>
                   </div>
@@ -150,7 +152,9 @@ const Product = () => {
             {query.data?.description && (
               <div className="mt-[3rem]">
                 <p className="font-medium text-lg mb-1">Product Description</p>
-                <p>{query.data?.description}</p>
+                <p
+                  dangerouslySetInnerHTML={{ __html: query.data?.description }}
+                ></p>
               </div>
             )}
           </div>
