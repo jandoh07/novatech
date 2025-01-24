@@ -8,6 +8,7 @@ import { useState } from "react";
 import Filter from "../components/SearchResults/Filter";
 import { MdClose } from "react-icons/md";
 import useSearchResults from "../hooks/useSearchResults";
+import Pagination from "../components/Pagination";
 
 const SearchResults = () => {
   const [toggleFilter, setToggleFilter] = useState<boolean>(false);
@@ -18,6 +19,7 @@ const SearchResults = () => {
     products,
     brands,
     categories,
+    paginationInfo,
   } = useSearchResults();
 
   return (
@@ -31,37 +33,45 @@ const SearchResults = () => {
                 <ScaleLoader color={"#FF5F5F"} />
               </div>
             )}
-            {(searchTermQuery.isSuccess || filterQuery.isSuccess) && (
-              <div className="">
-                <div className="flex justify-between items-center mt-5">
-                  <p>Showing results for "{searchTerm}"</p>
-                  <div
-                    className={`flex gap-2 items-center ${
-                      toggleFilter
-                        ? "bg-secondary text-white"
-                        : "border border-tertiary"
-                    } rounded-2xl px-2 py-[0.15rem] cursor-pointer`}
-                    onClick={() => setToggleFilter(!toggleFilter)}
-                  >
-                    <p>Filter</p>
-                    {toggleFilter ? <MdClose /> : <IoFilterSharp />}
+            {(searchTermQuery.isSuccess || filterQuery.isSuccess) &&
+              !searchTermQuery.isLoading &&
+              !filterQuery.isLoading && (
+                <div className="flex flex-col justify-between">
+                  <div className="flex justify-between items-center mt-5">
+                    <p>
+                      Showing results for "{searchTerm}" (
+                      {paginationInfo?.totalCount})
+                    </p>
+                    <div
+                      className={`flex gap-2 items-center ${
+                        toggleFilter
+                          ? "bg-secondary text-white"
+                          : "border border-tertiary"
+                      } rounded-2xl px-2 py-[0.15rem] cursor-pointer`}
+                      onClick={() => setToggleFilter(!toggleFilter)}
+                    >
+                      <p>Filter</p>
+                      {toggleFilter ? <MdClose /> : <IoFilterSharp />}
+                    </div>
                   </div>
-                </div>
-                {toggleFilter && (
-                  <div className="my-2">
-                    <Filter brands={brands} categories={categories} />
-                  </div>
-                )}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 mt-5">
-                  {products?.length === 0 && (
-                    <div className="text-center w-full">No products found</div>
+                  {toggleFilter && (
+                    <div className="my-2">
+                      <Filter brands={brands} categories={categories} />
+                    </div>
                   )}
-                  {products?.map((product: Product) => (
-                    <ProductCard product={product} key={product._id} />
-                  ))}
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 mt-5">
+                    {products?.length === 0 && (
+                      <div className="text-center w-full">
+                        No products found
+                      </div>
+                    )}
+                    {products?.map((product: Product) => (
+                      <ProductCard product={product} key={product._id} />
+                    ))}
+                  </div>
+                  <Pagination paginationInfo={paginationInfo} />
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
       </div>
