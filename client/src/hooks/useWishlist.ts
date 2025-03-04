@@ -1,77 +1,80 @@
 import { toast } from "react-toastify";
-import { useUserStore } from "../zustand/store"
+import { useUserStore } from "../zustand/store";
 import { customAxios } from "../axios/axios";
 import { useMutation } from "react-query";
 
-
 const useWishlist = () => {
-  const {user, setUser} = useUserStore();
+  const { user, setUser } = useUserStore();
 
-  const addToWishlistMutation = useMutation(async (productId: string) => {
-      const res = await customAxios.post(`wishlist/${productId}`)
+  const addToWishlistMutation = useMutation(
+    async (productId: string) => {
+      const res = await customAxios.post(`wishlist/${productId}`);
       return res.data;
-  }, {
-    onSuccess: () => {
-        toast.success("Product added to wishlist")
     },
-    onError: (error, productId: string) => {
-        toast.error("Error when adding product to wishlist")
+    {
+      onSuccess: () => {
+        toast.success("Product added to wishlist");
+      },
+      onError: (_, productId: string) => {
+        toast.error("Error when adding product to wishlist");
         if (user) {
-            setUser({
-                ...user,
-                wishlist: user.wishlist.filter(id => id !== productId)
-            })
+          setUser({
+            ...user,
+            wishlist: user.wishlist.filter((id) => id !== productId),
+          });
         }
+      },
     }
-  })
+  );
 
-  const removeFromWishlistMutation = useMutation(async (productId: string) => {
-        const res = await customAxios.delete(`wishlist/${productId}`)
-        return res.data;
-  },{
-    onSuccess: () => {
-        toast.success("Product removed from wishlist")
+  const removeFromWishlistMutation = useMutation(
+    async (productId: string) => {
+      const res = await customAxios.delete(`wishlist/${productId}`);
+      return res.data;
     },
-    onError: (error, productId: string) => {
-        toast.error("Error when removing product from wishlist")
-        if( user) {
-     
-            setUser({
-            ...user,
-            wishlist: [...user.wishlist, productId]
-        })
-    }
-    }
-  })
-
-    const addToWishlist = async (productId: string) => {
+    {
+      onSuccess: () => {
+        toast.success("Product removed from wishlist");
+      },
+      onError: (_, productId: string) => {
+        toast.error("Error when removing product from wishlist");
         if (user) {
-            setUser({
-                ...user,
-                wishlist: [...user.wishlist, productId]
-            })
-
-        addToWishlistMutation.mutate(productId)
-
-        return
+          setUser({
+            ...user,
+            wishlist: [...user.wishlist, productId],
+          });
         }
+      },
+    }
+  );
 
-        toast.error("You need to be logged in to add to wishlist")
+  const addToWishlist = async (productId: string) => {
+    if (user) {
+      setUser({
+        ...user,
+        wishlist: [...user.wishlist, productId],
+      });
+
+      addToWishlistMutation.mutate(productId);
+
+      return;
     }
 
-    const removeFromWishlist = async (productId: string) => {
-        if (user) {
-        setUser({
-            ...user,
-            wishlist: user.wishlist.filter(id => id !== productId)
-        })
+    toast.error("You need to be logged in to add to wishlist");
+  };
 
-        removeFromWishlistMutation.mutate(productId)
+  const removeFromWishlist = async (productId: string) => {
+    if (user) {
+      setUser({
+        ...user,
+        wishlist: user.wishlist.filter((id) => id !== productId),
+      });
 
+      removeFromWishlistMutation.mutate(productId);
     }
-    }
+  };
 
-    return {addToWishlist, removeFromWishlist}
-}
+  return { addToWishlist, removeFromWishlist };
+};
 
-export default useWishlist
+export default useWishlist;
