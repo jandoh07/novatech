@@ -1,4 +1,4 @@
-# NovaTech E-commerce App
+# MERN Stack E-commerce Web App
 NovaTech is a full-stack e-commerce application built using the MERN (MongoDB, Express, React, Node.js) stack. It allows users to browse products, add them to a cart or wishlist etc. It also includes features for admin management and secure authentication. Might also add more features in the future(improvements).
 
 ## Features
@@ -24,10 +24,9 @@ NovaTech is a full-stack e-commerce application built using the MERN (MongoDB, E
 2. Set up environment variables
    - Backend (api/.env)
       ```bash
-      PORT=5000
       MONGODB_URI=your-mongodb-connection-uri
       JWT_SECRET=your-jwt-secret
-      AWS_ACCESS_KEY=your-aws-access-key
+      AWS_ACCESS_KEY_ID=your-aws-access-key
       AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
       AWS_BUCKET_NAME=your-bucket-name
       AWS_REGION=your-aws-region
