@@ -19,9 +19,11 @@ const Cart = () => {
     async () => {
       if (user && user.cart.length > 0) {
         const res = await customAxios.get(`/products/${user.cart.join(",")}`);
+        if (typeof res.data === "object") return [res.data];
         return res.data;
       } else if (cart.length > 0) {
         const res = await customAxios.get(`/products/${cart.join(",")}`);
+        if (typeof res.data === "object") return [res.data];
         return res.data;
       }
       return [];
@@ -37,7 +39,7 @@ const Cart = () => {
     <div className="flex flex-col justify-between min-h-[100svh]">
       <div>
         <Header />
-        {user && user.cart.length === 0 && cart.length === 0 ? (
+        {(user && user.cart.length === 0) || cart.length === 0 ? (
           <div className="flex justify-center items-center h-[50vh]">
             <p className="text-2xl">Cart is empty</p>
           </div>
