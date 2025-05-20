@@ -18,7 +18,8 @@ const Product = () => {
   const [currentImage, setCurrentImage] = useState<string>("");
   const { addToCart, removeFromCart } = useCart();
   const isInWishlist = user && id && user.wishlist.includes(id);
-  const isInCart = user && id && (user.cart.includes(id) || cart.includes(id));
+  const isInCart =
+    id && ((user && user.cart.includes(id)) || cart.includes(id));
   const { addToWishlist, removeFromWishlist } = useWishlist();
 
   const query = useQuery("product", async () => {

@@ -17,7 +17,7 @@ const Cart = () => {
   const [isCartEmpty, setIsCartEmpty] = useState(false);
 
   const query = useQuery(
-    "cart",
+    ["cart", user?.cart, cart],
     async () => {
       if (user && user.cart.length > 0) {
         const res = await customAxios.get(`/products/${user.cart.join(",")}`);
@@ -33,8 +33,7 @@ const Cart = () => {
     {
       onSuccess: (data: Product[]) => {
         setCartTotalPrice(data);
-        if (data.length === 0) setIsCartEmpty(true);
-        else setIsCartEmpty(false);
+        setIsCartEmpty(data.length === 0);
       },
     }
   );
