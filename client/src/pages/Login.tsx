@@ -4,13 +4,14 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useMutation } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
-import { useUserStore } from "../zustand/store";
+import { useCartStore, useUserStore } from "../zustand/store";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [togglePassword, setTogglePassword] = useState(false);
   const { setUser } = useUserStore();
+  const { set_cart } = useCartStore();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +36,7 @@ const Login = () => {
         const expires = date.toUTCString();
 
         setUser({ expires, ...data });
+        set_cart([]);
 
         const referrer = document.referrer;
 

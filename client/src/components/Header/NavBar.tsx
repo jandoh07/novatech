@@ -13,7 +13,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { customAxios } from "../../axios/axios";
 import useValidateUser from "../../hooks/useValidateUser";
-import { useUserStore } from "../../zustand/store";
+import { useCartStore, useUserStore } from "../../zustand/store";
 import { useQuery } from "react-query";
 import { ScaleLoader } from "react-spinners";
 
@@ -27,6 +27,7 @@ const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
   const [search, setSearch] = useState("");
   const { user, isAdmin, setIsAdmin } = useValidateUser();
   const { logout } = useUserStore();
+  const { set_cart } = useCartStore();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -34,6 +35,7 @@ const NavBar = ({ toggleSidebar, setToggleSidebar }: NavBarProps) => {
 
     logout();
     setIsAdmin(false);
+    set_cart([]);
   };
 
   const getSuggestions = useQuery(
